@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכים - אתגרים</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            background: #f0f0f0;
+            margin: 0;
+        }
+
+        .presentation-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .slide {
+            padding: 50px 70px 100px 70px;
+            min-height: calc(100vh - 120px);
+            display: none;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block !important;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #1e3a8a;
+            border-bottom: 3px solid #f97316;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #1e3a8a;
+            margin: 25px 0 6px 0;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            list-style: disc;
+            padding-right: 25px;
+            margin: 4px 0;
+        }
+
+        ul li {
+            font-size: 1.1rem;
+            color: #374151;
+            padding: 3px 0;
+        }
+
+        .section-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 20px 0 8px 0;
+        }
+
+        .input-text {
+            font-size: 1.1rem;
+            color: #374151;
+            margin: 4px 0 4px 15px;
+        }
+
+        .example-label {
+            font-size: 1rem;
+            color: #888;
+            margin: 12px 0 4px 0;
+        }
+
+        .code-block {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin: 6px 0;
+            line-height: 1.7;
+            white-space: pre;
+        }
+
+        /* Hints slide */
+        .hint-row {
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+            padding: 11px 0;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+        }
+
+        .hint-row:last-child {
+            border-bottom: none;
+        }
+
+        .hint-q {
+            font-size: 1.15rem;
+            color: #374151;
+            flex-shrink: 0;
+        }
+
+        .hint-a {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .hint-a.revealed {
+            opacity: 1;
+        }
+
+        .hint-sub {
+            font-size: 0.95rem;
+            color: #555;
+            background: #f0f4ff;
+            border-radius: 6px;
+            padding: 6px 12px;
+            margin: 4px 0 2px 0;
+            opacity: 0;
+            transition: opacity 0.4s;
+            width: 100%;
+        }
+
+        .hint-sub.revealed {
+            opacity: 1;
+        }
+
+        .reveal-btn {
+            background: none;
+            border: 1px solid #0ea5e9;
+            color: #0ea5e9;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .reveal-btn:hover {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .reveal-btn.hidden {
+            display: none;
+        }
+
+        /* Nav */
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 15px;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover { background: #0ea5e9; }
+        .nav-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+
+        .slide-number {
+            position: fixed;
+            bottom: 20px;
+            right: 40px;
+            font-size: 13px;
+            color: #555;
+            z-index: 1000;
+        }
+
+        .copyright {
+            position: fixed;
+            bottom: 22px;
+            left: 20px;
+            font-size: 0.7rem;
+            color: rgba(0,0,0,0.25);
+            z-index: 1000;
+        }
+
+        @media print {
+            .nav-buttons, button { display: none !important; }
+            .slide { display: block !important; page-break-after: always; }
+            .hint-a, .hint-sub { opacity: 1 !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="presentation-container">
+
+    <!-- SLIDE 1: חלק א -->
+    <!--div class="slide active">
+        <h1>חלק א</h1>
+            <div style="font-size:2rem; font-weight:700; color:#374151; margin: 20px 0 4px 0;">
+                סיכום מערכים + ניהול זיכרון - חזרה וחיזוק
+            </div>
+            <div style="font-size:1.8rem; color:#374151; margin-right:240px; margin-bottom:60px;">
+                (stack &amp; heap)
+            </div>
+            <div style="font-size:1.6rem; color:#888; font-style:italic;">⏸ אני דוחה — נעשה לקראת המבחן</div>
+    </div-->
+
+    <!-- SLIDE 1: חלק א - For Uploading -->
+    <div class="slide active">
+        <h1>אתגרים בנושא - מערך מונים</h1>
+            <div style="position:relative; width:650px; height:400px; margin: 95px auto 0 180px;">
+                <img src="categories_1942.png" style="position:absolute; top:30px; left:200px; width:380px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.2); transform:rotate(-4deg);">
+                <img src="categories_2016.png" style="position:absolute; top:0; left:0; width:380px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.2); transform:rotate(3deg);">
+            </div>
+    </div>
+
+    <!-- SLIDE 2: חלק ב -->
+    <!--div class="slide">
+        <h1>חלק ב</h1>
+            <div style="font-size:2rem; font-weight:700; color:#374151; margin: 20px 0 25px 0;">
+                נושא חדש 
+                <span style="font-size:2.6rem; font-weight:900; color:#f97316;">?</span>
+                &nbsp;&nbsp;
+                <button class="reveal-btn" id="btn-topic" onclick="revealItem('ans-topic','btn-topic')">גלו נושא</button>
+                <span class="hint-a" id="ans-topic" style="font-size:2rem; color:#f97316;">מערך מונים</span>
+            </div>
+        <h3 style="font-size:1.6rem; margin: 28px 0 8px 0;">אתגר ראשון</h3>
+        <ul style="font-size:1.25rem; line-height:1.9;">
+            <li>חשיבה בזוגות</li>
+            <li>דיון בכיתה</li>
+            <li>עבודה בזוגות</li>
+        </ul>
+
+        <h3 style="font-size:1.6rem; margin: 28px 0 8px 0;">אתגר שני</h3>
+        <ul style="font-size:1.25rem; line-height:1.9;">
+            <li>חשיבה בזוגות</li>
+            <li>דיון בכיתה</li>
+            <li>עבודה בזוגות</li>
+        </ul>
+
+        <h3 style="font-size:1.6rem; margin: 28px 0 8px 0;">דף תרגילים — עבודה עצמאית</h3>
+    </div-->
+
+    <!-- SLIDE 3: Challenge 1 -->
+    <div class="slide">
+        <h1>אתגר ראשון</h1>
+
+        <div class="section-label">נתונים לנו:</div>
+        <p class="input-text">1. שנה</p>
+        <p class="input-text">2. מערך טמפרטורות יומיות לאותה שנה</p>
+
+        <div style="display:flex; align-items:baseline; gap:15px; margin:16px 0 6px 0;">
+            <span style="font-size:1.1rem; color:#374151;">מה אורך המערך?</span>
+            <button class="reveal-btn" id="btn-len" onclick="revealItem('ans-len','btn-len')">גלו</button>
+            <span class="hint-a" id="ans-len">365</span>
+        </div>
+
+        <div class="example-label">לדוגמא:</div>
+        <div class="code-block">year: 2025
+temps: [ 17, 14, 19, 22, 31, 28, ... ]
+         [0]  [1]  [2]  [3]      [364]</div>
+
+        <div class="section-label" style="margin-top:28px;">מה רוצים לקבל:</div>
+        <p class="input-text">כמה פעמים הופיעה כל טמפרטורה?</p>
+        <p style="font-size:0.95rem; color:#888; margin: 4px 0 8px 15px;">
+            (אם לא הייתה טמפרטורה מסוימת באף יום כל אותה שנה — לא כותבים אותה)
+        </p>
+
+        <div class="example-label">לדוגמא:</div>
+        <div class="code-block">In 2025 the temperature distribution was:
+7 appeared 5 times
+12 appeared 18 times
+18 appeared 28 times
+22 appeared 34 times
+25 appeared 50 times
+31 appeared 22 times
+37 appeared 8 times</div>
+    </div>
+
+    <!-- SLIDE 4: Hints -->
+    <div class="slide">
+        <h1>כיוון לפתרון — אתגר ראשון</h1>
+
+        <div class="hint-row">
+            <span class="hint-q">נצטרך מערך שיכיל טמפרטורות בטווח 0–40</span>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">כמה איברים יהיו במערך?</span>
+            <button class="reveal-btn" id="btn-h2" onclick="revealItem('ans-h2','btn-h2')">גלו</button>
+            <span class="hint-a" id="ans-h2">41</span>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">מה יהיו האינדקסים?</span>
+            <button class="reveal-btn" id="btn-h3" onclick="revealItem('ans-h3','btn-h3')">גלו</button>
+            <span class="hint-a" id="ans-h3">0 עד 40</span>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">מה יכיל המערך בכל תא?</span>
+            <button class="reveal-btn" id="btn-h4" onclick="revealItem('ans-h4','btn-h4')">גלו</button>
+            <span class="hint-a" id="ans-h4">מונה טמפרטורות</span>
+            <div class="hint-sub" id="ans-h4-sub">
+                לדוגמא: בתא 25 — כמה פעמים בשנה הייתה טמפ׳ 25<br>
+                בתא 32 — כמה פעמים בשנה הייתה טמפ׳ 32
+            </div>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">באיזה ערכים צריך לאתחל את המערך?</span>
+            <button class="reveal-btn" id="btn-h5" onclick="revealItem('ans-h5','btn-h5')">גלו</button>
+            <span class="hint-a" id="ans-h5">0</span>
+            <div class="hint-sub" id="ans-h5-sub">
+                (זו ממילא ברירת המחדל — אז לא חייבים לאתחל במפורש)
+            </div>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">מה יהיה תהליך העבודה שלנו?</span>
+            <button class="reveal-btn" id="btn-h6" onclick="revealItem('ans-h6','btn-h6')">גלו</button>            
+            <span class="hint-a" id="ans-h6">
+                <div class="hint-sub" id="ans-h6-sub">
+                    נסו בקוד - וגלו 🤔
+                </div>
+            </span>
+        </div>
+
+    </div>
+
+    <!-- SLIDE 5: Challenge 2 -->
+    <div class="slide">
+        <h1>אתגר שני</h1>
+
+        <div class="section-label">נתונים לנו:</div>
+        <p class="input-text">מערך התפלגות הטמפרטורות (41 תאים) שחישבתם באתגר הראשון</p>
+
+        <div class="section-label" style="margin-top:28px;">מה רוצים לקבל:</div>
+        <p class="input-text">לכמה ימים בשנה הייתה כל קטגוריית מזג אוויר?</p>
+
+        <div class="example-label">טבלת הקטגוריות:</div>
+        <table style="border-collapse:collapse; margin: 8px 0 20px 0; font-size:1.1rem; direction:rtl;">
+            <thead>
+                <tr style="background:#1e3a8a; color:white;">
+                    <th style="padding:10px 24px; text-align:right; border:1px solid #ccc;">קטגוריה</th>
+                    <th style="padding:10px 24px; text-align:right; border:1px solid #ccc;">טווח טמפרטורות</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background:#f8f8f8;">
+                    <td style="padding:9px 24px; border:1px solid #ccc;">קפוא (Freezing)</td>
+                    <td style="padding:9px 24px; border:1px solid #ccc;">0 – 5</td>
+                </tr>
+                <tr>
+                    <td style="padding:9px 24px; border:1px solid #ccc;">קר (Cold)</td>
+                    <td style="padding:9px 24px; border:1px solid #ccc;">6 – 14</td>
+                </tr>
+                <tr style="background:#f8f8f8;">
+                    <td style="padding:9px 24px; border:1px solid #ccc;">נעים (Pleasant)</td>
+                    <td style="padding:9px 24px; border:1px solid #ccc;">15 – 22</td>
+                </tr>
+                <tr>
+                    <td style="padding:9px 24px; border:1px solid #ccc;">חם (Warm)</td>
+                    <td style="padding:9px 24px; border:1px solid #ccc;">23 – 30</td>
+                </tr>
+                <tr style="background:#f8f8f8;">
+                    <td style="padding:9px 24px; border:1px solid #ccc;">לוהט (Hot)</td>
+                    <td style="padding:9px 24px; border:1px solid #ccc;">31 – 40</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="example-label">לדוגמא:</div>
+        <div class="code-block">In 2025 the weather distribution was:
+Freezing: 3 times
+Cold: 47 times
+Pleasant: 89 times
+Warm: 142 times
+Hot: 84 times</div>
+    </div>
+
+    <!-- SLIDE 6: Hints for Challenge 2 -->
+    <div class="slide">
+        <h1>כיוון לפתרון — אתגר שני</h1>
+
+        <div class="hint-row">
+            <span class="hint-q">מה נצטרך?</span>
+            <button class="reveal-btn" id="btn-c2h1" onclick="revealItem('ans-c2h1','btn-c2h1')">גלו</button>
+            <span class="hint-a" id="ans-c2h1">מערך</span>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">כמה איברים יהיו במערך?</span>
+            <button class="reveal-btn" id="btn-c2h2" onclick="revealItem('ans-c2h2','btn-c2h2')">גלו</button>
+            <span class="hint-a" id="ans-c2h2">5</span>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">מה יהיו האינדקסים?</span>
+            <button class="reveal-btn" id="btn-c2h3" onclick="revealItem('ans-c2h3','btn-c2h3')">גלו</button>
+            <span class="hint-a" id="ans-c2h3">0 עד 4</span>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">מה יכיל המערך בכל תא?</span>
+            <button class="reveal-btn" id="btn-c2h4" onclick="revealItem('ans-c2h4','btn-c2h4')">גלו</button>
+            <span class="hint-a" id="ans-c2h4">מונה קטגוריות</span>
+        </div>
+
+        <div class="hint-row">
+            <span class="hint-q">איך נדפיס את התוצאה?</span>
+            <button class="reveal-btn" id="btn-c2h5" onclick="revealItem('ans-c2h5','btn-c2h5')">גלו</button>
+            <div class="hint-sub" id="ans-c2h5">
+                נתונה פעולה שמקבלת את המערך ומדפיסה את הקטגוריות<br>
+                <span style = "margin: 0 10px;"> ← </span>איך הפעולה תדע את שמות הקטגוריות<span style = "margin: 0 10px;"> ← </span> <b>נשלח לה כפרמטר, מערך של מחרוזות</b>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="nav-buttons">
+    <button class="nav-btn" onclick="prevSlide()" id="prev-btn" disabled>הקודם →</button>
+    <button class="nav-btn" onclick="nextSlide()" id="next-btn">← הבא</button>
+</div>
+<div class="slide-number">4 / <span id="current-num">1</span></div>
+<div class="copyright">חגית ידוב  Hagit Yidov, 2026</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    function showSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = n;
+        slides[currentSlide].classList.add('active');
+        document.getElementById('current-num').textContent = currentSlide + 1;
+        document.getElementById('prev-btn').disabled = currentSlide === 0;
+        document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+    }
+
+    function nextSlide() { if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1); }
+    function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
+
+    function revealItem(answerId, btnId) {
+        document.getElementById(answerId).classList.add('revealed');
+        document.getElementById(btnId).classList.add('hidden');
+        var sub = document.getElementById(answerId + '-sub');
+        if (sub) sub.classList.add('revealed');
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') prevSlide();
+        else if (e.key === 'ArrowLeft' || e.key === ' ') nextSlide();
+    });
+</script>
+
+</body>
+</html>
